@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security6">
+	
+	<th:block th:fragment="ajaxLoadedContent">
+
+		<div class="container" 
+			style="margin-bottom: 100px;margin-top: 100px;font-family: Oswald, sans-serif;color: #12044F;">
+			<th:block th:if="${allComments.isEmpty()}">
+				<div class="text-center">
+					<h2>No Comments Available</h2>
+					<button class="btn btn-creator-blue-light mt-5"
+						th:onclick="redirectHome()">
+						Home				
+					</button>
+				</div>
+			</th:block>
+			
+			<th:block th:if="${!allComments.isEmpty()}">
+				<div class="text-center mb-5">
+					<h2 th:text="${event.eventTitle}"></h2>
+					<h2>All Comments</h2>
+				</div>
+				
+				<th:block sec:authorize="hasAuthority('ROLE_USER')">
+					<div class="mb-4">
+						<button class="btn btn-creator-blue-light mt-5"
+							th:onclick="redirectAddComment([[${event.eventId}]])">
+							Add Comment				
+						</button>
+					</div>
+				</th:block>
+				
+				<input type="hidden" id="recordsPerPage"
+					th:value="${recordsPerPage}"
+				/>
+				
+				<table class="table table-bordered table-stripped" id="listingTable">
+					<thead class="table-primary">
+						<tr>
+							<th class="text-center"
+								style="text-align: center; vertical-align: middle;">
+								Consumer
+							</th>
+							<th class="text-center"
+								style="text-align: center; vertical-align: middle;">
+								Text
+							</th>
+							<th class="text-center"
+								style="text-align: center; vertical-align: middle;">
+								Posted
+							</th>
+							
+						</tr>
+					</thead>
+					
+					<tbody class="table-secondary">
+						<tr th:each="tempComment : ${allComments}">
+							<th:block th:each="tempUser : ${allUsers}">
+								<th:block th:each="tempConsumer : ${allConsumers}">
+									<th:block th:if="${tempComment.consumerId == tempConsumer.consumerId}">
+										<th:block th:if="${tempConsumer.userId == tempUser.id}">
+											<td class="text-center"
+												style="text-align: center; vertical-align: middle;">
+												<h5 th:text="${tempUser.firstName + ' ' + tempUser.lastName}"></h5>
+												<img
+													th:onerror="this.src='https://st4.depositphotos.com/14953852/22772/v/1600/depositphotos_227725020-stock-illustration-image-available-icon-flat-vector.jpg'"
+													th:src="${tempConsumer.avatarUrl}" 
+													style="max-height: 90px;width: 110px;"
+												/>
+												<br>
+												<th:block sec:authorize="hasAuthority('ADMIN')">
+													<button class="btn btn-creator-red"
+														th:onclick="deleteComment([[${tempComment.commentId}]],[[${event.eventId}]])">
+														Remove
+													</button>
+												</th:block>
+											</td>
+											
+											<td class="text-center"
+												style="text-align: center; vertical-align: middle;"
+												th:text="${tempComment.text}">
+											</td>
+											
+											<td class="text-center"
+												style="text-align: center; vertical-align: middle;"
+												th:text="${tempComment.createdAtStr}">
+											</td>
+											
+											
+										</th:block>
+									</th:block>
+								</th:block>
+							</th:block>
+						</tr>
+					</tbody>
+				</table>
+				
+				<div style="float: right">
+					<button class="btn-creator-grey"
+						th:onclick="prevPage()"
+						id="btn_prev"
+						th:text="${'Prev'}">
+					</button>
+					page: <span id="page"></span>
+					
+					<button class="btn-creator-grey"
+						th:onclick="nextPage()" 
+						id="btn_next"
+						th:text="${'Next'}">
+					</button>
+				</div>
+
+				<script th:src="@{/js/pagination.js}"></script>
+				<script>
+					$(document).ready(function() {
+						changePage(1);
+					});
+				</script>
+			</th:block>
+		</div>
+	</th:block>

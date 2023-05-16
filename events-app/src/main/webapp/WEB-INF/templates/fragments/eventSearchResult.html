@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security6">
+	
+	<th:block th:fragment="ajaxLoadedContent">
+
+		<div class="container" 
+			style="margin-bottom: 100px;margin-top: 100px;font-family: Oswald, sans-serif;color: #12044F;">
+			<th:block th:if="${allEvents.isEmpty()}">
+				<div class="text-center">
+					<h2>No Search Result</h2>
+					<button class="btn btn-creator-grey mt-5"
+						th:onclick="redirectHome()">
+						Home
+					</button>
+				</div>
+			</th:block>
+			
+			<th:block th:if="${!allEvents.isEmpty()}">
+				<div class="text-center mb-5">
+					<h2 th:text="${'Events Found: ' + allEvents.size()}"></h2>
+				</div>
+				
+				<input type="hidden" id="recordsPerPage"
+					th:value="${recordsPerPage}"
+				/>
+				
+				<table class="table table-bordered table-stripped" id="listingTable">
+					<thead class="table-primary">
+						<tr>
+							<th class="text-center"
+								style="text-align: center; vertical-align: middle">
+								Preview
+							</th>
+							
+							<th class="text-center"
+								style="text-align: center; vertical-align: middle">
+								Title
+							</th>
+							
+							
+							<th class="text-center"
+								style="text-align: center; vertical-align: middle">
+								Location
+							</th>
+							
+							<th class="text-center"
+								style="text-align: center; vertical-align: middle">
+								Category
+							</th>
+							
+							<th class="text-center"
+								style="text-align: center; vertical-align: middle">
+								Date
+							</th>
+							
+							
+							
+							<th class="text-center"
+								style="text-align: center; vertical-align: middle">
+								Actions
+							</th>
+						</tr>
+					</thead>
+					
+					<tbody class="table-dark">
+						<tr th:each="tempEvent : ${allEvents}">
+							<th:block th:each="tempCategory : ${allCategories}">
+								<th:block th:each="tempLocation : ${allLocations}">
+									<th:block th:if="${tempCategory.categoryId == tempEvent.categoryId}">
+										<th:block th:if="${tempLocation.locationId == tempEvent.locationId}">
+											<td class="text-center"
+												style="text-align: center; vertical-align: middle">
+												<img th:onerror="this.src='https://st4.depositphotos.com/14953852/22772/v/1600/depositphotos_227725020-stock-illustration-image-available-icon-flat-vector.jpg'"
+													th:src="${tempLocation.imageUrl}"
+													style="height: 200px;width: 200px;" 
+												/>
+												<br>												
+												<button class="btn btn-secondary" 
+													th:text="${'All Comments(' + tempEvent.commentsIds.size() + ')'}"
+													th:onclick="redirectAllComments([[${tempEvent.eventId}]])">
+												</button>																																																	
+											</td>
+											
+											<td class="text-center"
+												style="text-align: center; vertical-align: middle"
+												th:text="${tempEvent.eventTitle}">
+											</td>
+																						
+											<td class="text-center"
+												style="text-align: center; vertical-align: middle"
+												th:text="${tempLocation.locationName}">
+											</td>
+											
+											<td class="text-center"
+												style="text-align: center; vertical-align: middle"
+												th:text="${tempCategory.title}">
+											</td>
+											
+											<td class="text-center"
+												style="text-align: center; vertical-align: middle"
+												th:text="${tempEvent.eventDateStr}">
+											</td>
+											
+											<td class="text-center"
+												style="text-align: center; vertical-align: middle">
+												<div class="dropdown">
+													<button type="button" class="btn-creator-blue-light dropdown-toggle" data-toggle="dropdown">
+                        								Actions
+                    								</button>                   								
+													<div class="dropdown-menu">																																													
+														<button class="dropdown-item btn-creator-grey"
+															th:onclick="redirectAddComment([[${tempEvent.eventId}]])">
+															Comment
+														</button>															
+													</div>												
+												</div>
+											</td>
+										</th:block>
+									</th:block>
+								</th:block>
+							</th:block>
+						</tr>
+					</tbody>
+				</table>
+				
+				<div style="float: right">
+					<button class="btn-creator-grey"
+						th:onclick="prevPage()"
+						id="btn_prev"
+						th:text="${'Prev'}">
+					</button>
+					page: <span id="page"></span>
+					
+					<button class="btn-creator-grey"
+						th:onclick="nextPage()" 
+						id="btn_next"
+						th:text="${'Next'}">
+					</button>
+				</div>
+
+				<script th:src="@{/js/pagination.js}"></script>
+				<script>
+					$(document).ready(function() {
+						changePage(1);
+					});
+					
+				</script>
+				
+				
+			</th:block>
+		</div>
+	</th:block>

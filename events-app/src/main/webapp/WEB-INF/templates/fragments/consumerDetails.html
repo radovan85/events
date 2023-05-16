@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security6">
+	
+	
+	<th:block th:fragment="ajaxLoadedContent">
+
+		<div class="container" 
+			style="margin-bottom: 100px;margin-top: 100px;font-family: Oswald, sans-serif;color: #12044F;">
+			<div class="text-center mb-5">
+				<h2>Consumer Details</h2>
+			</div>
+			
+			<table class="table table-bordered">
+				<tbody class="table-secondary">
+					<tr>
+						<td class="text-center"
+							style="text-align: center; vertical-align: middle">
+							Avatar
+						</td>
+						<td class="text-center"
+							style="text-align: center; vertical-align: middle">
+							<img 
+								th:onerror="this.src='https://st4.depositphotos.com/14953852/22772/v/1600/depositphotos_227725020-stock-illustration-image-available-icon-flat-vector.jpg'"
+								th:src="${consumer.avatarUrl}"
+								style="height: 150px;width: 30%"
+							/>
+						</td>
+					</tr>
+					<tr>
+						<td class="text-center"
+							style="text-align: center; vertical-align: middle">
+							Consumer Id
+						</td>
+						<td class="text-center"
+							style="text-align: center; vertical-align: middle"
+							th:text="${consumer.consumerId}">
+						</td>
+					</tr>
+					
+					<tr>
+						<td class="text-center"
+							style="text-align: center; vertical-align: middle">
+							Full Name
+						</td>
+						<td class="text-center"
+							style="text-align: center; vertical-align: middle"
+							th:text="${user.firstName + ' ' + user.lastName}">
+						</td>
+					</tr>
+					
+					<tr>
+						<td class="text-center"
+							style="text-align: center; vertical-align: middle">
+							Email
+						</td>
+						<td class="text-center"
+							style="text-align: center; vertical-align: middle"
+							th:text="${user.email}">
+						</td>
+					</tr>
+					
+					<tr>
+						<td class="text-center"
+							style="text-align: center; vertical-align: middle">
+							Enabled
+						</td>
+						<td class="text-center"
+							style="text-align: center; vertical-align: middle">
+							<th:block th:if="${user.enabled == 0}">
+								<span class="text-danger">Suspended</span>
+							</th:block>
+							
+							<th:block th:if="${user.enabled == 1}">
+								<span >Enabled</span>
+							</th:block>
+						</td>
+					</tr>
+					
+					<tr>
+						<td class="text-center"
+							style="text-align: center; vertical-align: middle">
+							Registration Time
+						</td>
+						<td class="text-center"
+							style="text-align: center; vertical-align: middle"
+							th:text="${consumer.registrationDateStr}">
+						</td>
+					</tr>
+					
+					<tr>
+						<td class="text-center"
+							style="text-align: center; vertical-align: middle">
+							Last Login
+						</td>
+						<td class="text-center"
+							style="text-align: center; vertical-align: middle"
+							th:text="${lastLoginStr}">														
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			
+			<div class="text-center mt-5">
+				<button class="btn btn-creator-grey"
+					th:onclick="redirectAllConsumers()">
+					All Consumers
+				</button>
+			</div>
+		</div>
+	</th:block>

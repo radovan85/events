@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security6">
+	
+	
+	<th:block th:fragment="ajaxLoadedContent">
+
+		<div class="container" 
+			style="margin-bottom: 100px;margin-top: 100px;font-family: Oswald, sans-serif;color: #12044F;">
+			<th:block th:if="${allLocations.isEmpty()}">
+				<div class="text-center">
+					<h2>No Locations Available</h2>
+					<button class="btn btn-creator-blue-light mt-5"
+						th:onclick="redirectAddLocation()">
+						Add Location
+					</button>
+				</div>
+			</th:block>
+			
+			<th:block th:if=${!allLocations.isEmpty()}>
+				<div class="text-center mb-5">
+					<h2>Locations List</h2>
+				</div>
+				
+				<div class="mb-4">
+					<button class="btn btn-creator-blue-light"
+						th:onclick="redirectAddLocation()">
+						Add Location
+					</button>
+				</div>
+				
+				<input type="hidden" id="recordsPerPage"
+					th:value="${recordsPerPage}"
+				/>
+				
+				<table class="table table-bordered table-stripped" id="listingTable">
+					<thead class="table-primary">
+						<tr>
+							<th class="text-center"
+								style="text-align: center; vertical-align: middle">
+								Preview
+							</th>
+							
+							<th class="text-center"
+								style="text-align: center; vertical-align: middle">
+								Location Id
+							</th>
+							
+							<th class="text-center"
+								style="text-align: center; vertical-align: middle">
+								Name
+							</th>
+							
+							<th class="text-center"
+								style="text-align: center; vertical-align: middle">
+								Details
+							</th>	
+							
+							<th class="text-center"
+								style="text-align: center; vertical-align: middle">
+								Actions
+							</th>						
+						</tr>
+					</thead>
+					
+					<tbody class="table-dark">
+						<tr th:each="tempLocation : ${allLocations}">
+							<td class="text-center"
+								style="text-align: center; vertical-align: middle">
+								<img th:onerror="this.src='https://st4.depositphotos.com/14953852/22772/v/1600/depositphotos_227725020-stock-illustration-image-available-icon-flat-vector.jpg'"
+									th:src="${tempLocation.imageUrl}"
+									style="height: 150px;width: 30%;" 
+								/>
+							</td>
+							
+							<td class="text-center"
+								style="text-align: center; vertical-align: middle"
+								th:text="${tempLocation.locationId}">
+							</td>
+							
+							<td class="text-center"
+								style="text-align: center; vertical-align: middle"
+								th:text="${tempLocation.locationName}">
+							</td>
+							
+							<td class="text-center"
+								style="text-align: center; vertical-align: middle"
+								th:text="${tempLocation.locationDetails}">
+							</td>
+							
+							<td class="text-center"
+								style="text-align: center; vertical-align: middle">
+								<div class="dropdown">
+									<button type="button" class="btn-creator-blue-light dropdown-toggle" data-toggle="dropdown">
+                        				Actions
+                    				</button>
+									<div class="dropdown-menu">
+										<button class="dropdown-item btn-creator-blue-light" 
+											th:onclick="redirectUpdateLocation([[${tempLocation.locationId}]])"
+											th:text="${'Update'}">
+										</button>								
+										
+										<button class="dropdown-item btn-creator-red" 
+											th:onclick="deleteLocation([[${tempLocation.locationId}]])"
+											th:text="${'Delete'}">
+										</button>	
+									</div>
+								</div>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+				
+				<div style="float: right">
+					<button class="btn-creator-grey"
+						th:onclick="prevPage()"
+						id="btn_prev"
+						th:text="${'Prev'}">
+					</button>
+					page: <span id="page"></span>
+					
+					<button class="btn-creator-grey"
+						th:onclick="nextPage()" 
+						id="btn_next"
+						th:text="${'Next'}">
+					</button>
+				</div>
+
+				<script th:src="@{/js/pagination.js}"></script>
+				<script>
+					$(document).ready(function() {
+						changePage(1);
+					});
+				</script>
+			</th:block>
+		</div>
+
+	</th:block>

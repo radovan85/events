@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security6">
+	
+	
+	<th:block th:fragment="ajaxLoadedContent">
+
+		<div class="container" 
+			style="margin-bottom: 100px;margin-top: 100px;font-family: Oswald, sans-serif;color: #12044F;">
+			<th:block th:if="${allConsumers.isEmpty()}">
+				<div class="text-center">
+					<h2>No Consumers Available</h2>
+					<button class="btn btn-creator-blue-light mt-5"
+						th:onclick=redirectHome()>
+						Home	
+					</button>
+				</div>
+			</th:block>
+			
+			<th:block th:if="${!allConsumers.isEmpty()}">
+				<div class="text-center mb-5">
+					<h2>Consumers List</h2>
+				</div>
+				
+				<input type="hidden" id="recordsPerPage"
+					th:value="${recordsPerPage}"
+				/>
+				
+				<table class="table table-bordered table-stripped" id="listingTable">
+					<thead class="table-primary">
+						<tr>
+							<th class="text-center"
+								style="text-align: center; vertical-align: middle">
+								Full Name
+							</th>
+							
+							<th class="text-center"
+								style="text-align: center; vertical-align: middle">
+								Email
+							</th>
+							
+							<th class="text-center"
+								style="text-align: center; vertical-align: middle">
+								Enabled
+							</th>
+							
+							<th class="text-center"
+								style="text-align: center; vertical-align: middle">
+								Actions
+							</th>
+						</tr>
+					</thead>
+					
+					<tbody class="table-dark">
+						<tr th:each="tempConsumer : ${allConsumers}">
+							<th:block th:each="tempUser : ${allUsers}">
+								<th:block th:if="${tempConsumer.userId == tempUser.id}">
+									<td class="text-center"
+										style="text-align: center; vertical-align: middle"
+										th:text="${tempUser.firstName + ' ' + tempUser.lastName}">
+									</td>
+									
+									<td class="text-center"
+										style="text-align: center; vertical-align: middle"
+										th:text="${tempUser.email}">
+									</td>
+									
+									<td class="text-center"
+										style="text-align: center; vertical-align: middle">
+										<th:block th:if="${tempUser.enabled == 0}">
+											<span class="text-danger">Suspended</span>
+										</th:block>
+										
+										<th:block th:if="${tempUser.enabled == 1}">
+											<span>Enabled</span>
+										</th:block>
+									</td>
+									
+									<td class="text-center"
+										style="text-align: center; vertical-align: middle">
+										<div class="dropdown">
+											<button type="button" class="btn-creator-blue-light dropdown-toggle" data-toggle="dropdown">
+                        						Actions
+                    						</button>
+											<div class="dropdown-menu">
+												<button class="dropdown-item btn-creator-blue-light" 
+													th:onclick="redirectConsumerDetails([[${tempConsumer.consumerId}]])"
+													th:text="${'Details'}">
+												</button>
+												
+												<th:block th:if="${tempUser.enabled == 1}">
+													<button class="dropdown-item btn-creator-grey" 
+														th:onclick="suspendUser([[${tempConsumer.userId}]])"
+														th:text="${'Suspend'}">
+													</button>
+												</th:block>	
+												
+												<th:block th:if="${tempUser.enabled == 0}">
+													<button class="dropdown-item btn-creator-grey" 
+														th:onclick="reactivateUser([[${tempConsumer.userId}]])"
+														th:text="${'Reactivate'}">
+													</button>
+												</th:block>										
+										
+												<button class="dropdown-item btn-creator-red" 
+													th:onclick="deleteConsumer([[${tempConsumer.consumerId}]])"
+													th:text="${'Delete'}">
+												</button>	
+											</div>
+										</div>
+									</td>
+								</th:block>
+							</th:block>
+						</tr>
+					</tbody>
+				</table>
+				
+				<div style="float: right">
+					<button class="btn-creator-grey"
+						th:onclick="prevPage()"
+						id="btn_prev"
+						th:text="${'Prev'}">
+					</button>
+					page: <span id="page"></span>
+					
+					<button class="btn-creator-grey"
+						th:onclick="nextPage()" 
+						id="btn_next"
+						th:text="${'Next'}">
+					</button>
+				</div>
+
+				<script th:src="@{/js/pagination.js}"></script>
+				<script>
+					$(document).ready(function() {
+						changePage(1);
+					});
+				</script>
+			</th:block>
+		</div>
+	</th:block>

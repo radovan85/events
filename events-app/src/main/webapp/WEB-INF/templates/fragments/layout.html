@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security6">
+<head th:fragment="head">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<title>Event Tracker App</title>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+
+
+<link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Oswald" />
+<link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet'>
+
+<link rel="stylesheet" th:href="@{/css/bootstrap_v4.5.0.min.css}">
+</head>	
+	
+<body>  
+	<div class="header" th:fragment="navbar-menu" style="font-family: Oswald,sans-serif;color: #5797e4;">
+		<nav id="header" class="navbar navbar-expand bg-dark flex-column flex-md-row" style="position: fixed; top: 0; left: 0; right: 0; z-index: 99;">
+    		<div class="navbar-nav-scroll">   
+            </div>
+
+            <ul class="nav-tabs navbar-nav ml-md-auto bg-dark">
+            	<li class="nav-item">  
+            		<a class="nav-link"  
+            			th:onclick="redirectHome()" 
+            			th:onmouseover="this.style='cursor: pointer'">
+            			Home
+            		</a>
+            	</li>
+            	
+            	<th:block sec:authorize="isAnonymous()">
+                	<li class="nav-item">
+                		<a class="nav-link" 
+                			th:onclick="redirectRegister()" 
+                			th:onmouseover="this.style='cursor: pointer'">
+                			Register
+                		</a>
+                	</li>
+                	
+                	<li class="nav-item">
+                		<a class="nav-link" 
+                			th:onclick="redirectLogin()" 
+                			th:onmouseover="this.style='cursor: pointer'">
+                			Login
+                		</a>
+                	</li>
+                </th:block>
+                
+                <th:block sec:authorize="isAuthenticated()">
+                	<li class="nav-item">  
+            			<a class="nav-link"  
+            				th:onclick="redirectAllEvents()" 
+            				th:onmouseover="this.style='cursor: pointer'">
+            				Events
+            			</a>
+            		</li>
+                </th:block>
+                
+                <th:block sec:authorize="hasAuthority('ADMIN')">
+                	
+                	<li class="nav-item">  
+            			<a class="nav-link"  
+            				th:onclick="redirectAllCategories()" 
+            				th:onmouseover="this.style='cursor: pointer'">
+            				Categories
+            			</a>
+            		</li>
+                
+                	<li class="nav-item">  
+            			<a class="nav-link"  
+            				th:onclick="redirectAllConsumers()" 
+            				th:onmouseover="this.style='cursor: pointer'">
+            				Consumers
+            			</a>
+            		</li>
+            		
+            		<li class="nav-item">  
+            			<a class="nav-link"  
+            				th:onclick="redirectAllLocations()" 
+            				th:onmouseover="this.style='cursor: pointer'">
+            				Locations
+            			</a>
+            		</li>
+                </th:block>
+                
+                <th:block sec:authorize="isAuthenticated()">
+    				<!-- Dropdown -->
+    				<li class="nav-item dropdown">
+      					<a class="nav-link dropdown-toggle bg-dark" id="navbardrop" data-toggle="dropdown" 
+      						th:onmouseover="this.style='cursor: pointer;'">
+        					<span th:text="${#authentication.getPrincipal().getUsername()}"></span>
+      					</a>
+      					<div class="dropdown-menu" style="color: #5797e4;">
+      						<a class="dropdown-item bg-dark" 
+      							th:onmouseover="this.style='cursor: pointer'"  
+      							th:onclick="redirectLogout()">
+      							logout
+      						</a>
+      					</div>
+    				</li>
+    			</th:block>                              
+            </ul>
+		</nav>
+	</div>
+</body>	
+	
+</html>

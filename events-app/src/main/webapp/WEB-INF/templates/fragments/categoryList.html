@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security6">
+	
+	<th:block th:fragment="ajaxLoadedContent">
+
+		<div class="container" 
+			style="margin-bottom: 100px;margin-top: 100px;font-family: Oswald, sans-serif;color: #12044F;">
+			<th:block th:if="${allCategories.isEmpty()}">
+				<div class="text-center">
+					<h2>No Categories Available</h2>
+					<button class="btn btn-creator-blue-light mt-5" 
+						th:onclick="redirectAddCategory()">
+						Add Category
+					</button>
+				</div>
+			</th:block>
+			
+			<th:block th:if="${!allCategories.isEmpty()}">
+				<div class="text-center mb-5">
+					<h2>Categories List</h2>
+				</div>
+				
+				<div class="mb-4">
+					<button class="btn btn-creator-blue-light"
+						th:onclick="redirectAddCategory()">
+						Add Category
+					</button>
+				</div>
+				
+				<input type="hidden" id="recordsPerPage"
+					th:value="${recordsPerPage}"
+				/>
+				
+				<table class="table table-stripped table-bordered" id="listingTable">
+					<thead class="table-primary">
+						<tr>
+							<th class="text-center"
+								style="text-align: center; vertical-align: middle">Category Id</th>
+							<th class="text-center"
+								style="text-align: center; vertical-align: middle">Title</th>
+							<th class="text-center"
+								style="text-align: center; vertical-align: middle">Actions</th>
+						</tr>
+					</thead>
+					
+					<tbody class="table-dark">
+						<tr th:each="tempCategory : ${allCategories}">
+							<td class="text-center"
+								style="text-align: center; vertical-align: middle"
+								th:text="${tempCategory.categoryId}">
+							</td>
+							
+							<td class="text-center"
+								style="text-align: center; vertical-align: middle"
+								th:text="${tempCategory.title}">
+							</td>
+							
+							<td class="text-center"
+								style="text-align: center; vertical-align: middle">
+								<div class="dropdown">
+									<button type="button" class="btn-creator-blue-light dropdown-toggle" data-toggle="dropdown">
+                        				Actions
+                    				</button>
+									<div class="dropdown-menu">
+										<button class="dropdown-item btn-creator-blue-light" 
+											th:onclick="redirectUpdateCategory([[${tempCategory.categoryId}]])"
+											th:text="${'Update'}">
+										</button>								
+										
+										<button class="dropdown-item btn-creator-red" 
+											th:onclick="deleteCategory([[${tempCategory.categoryId}]])"
+											th:text="${'Delete'}">
+										</button>	
+									</div>
+								</div>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+				
+				<div style="float: right">
+					<button class="btn-creator-grey"
+						th:onclick="prevPage()"
+						id="btn_prev"
+						th:text="${'Prev'}">
+					</button>
+					page: <span id="page"></span>
+					
+					<button class="btn-creator-grey"
+						th:onclick="nextPage()" 
+						id="btn_next"
+						th:text="${'Next'}">
+					</button>
+				</div>
+
+				<script th:src="@{/js/pagination.js}"></script>
+				<script>
+					$(document).ready(function() {
+						changePage(1);
+					});
+				</script>
+			</th:block>
+		</div>
+
+	</th:block>
